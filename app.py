@@ -5,17 +5,17 @@ from PIL import Image
 # ---------------------------------------------------------
 # 1. 페이지 설정
 # ---------------------------------------------------------
-st.set_page_config(page_title="쇼핑 쇼츠 해커 (구글 Pro버전)", page_icon="🍗", layout="wide")
+st.set_page_config(page_title="쇼츠 분석표 진단기 (Gemini 3.0)", page_icon="📊", layout="wide")
 
 # ---------------------------------------------------------
 # 2. 사이드바: 구글 API 키 입력
 # ---------------------------------------------------------
 with st.sidebar:
-    st.header("⚙️ 설정 (2025 Pro 에디션)")
+    st.header("⚙️ 설정")
     api_key = st.text_input("Google Gemini API Key를 입력하세요", type="password")
     st.info("구글 AI Studio에서 받은 무료 키를 넣으세요.")
     st.markdown("---")
-    st.write("Powered by Google Gemini Pro")
+    st.write("Powered by **Gemini 3.0 Pro** (Latest)")
 
 # 구글 AI 설정
 if api_key:
@@ -27,95 +27,87 @@ else:
 # ---------------------------------------------------------
 # 3. 메인 화면
 # ---------------------------------------------------------
-st.title("🍗 유튜브 쇼핑 쇼츠 해커 (Pro 엔진)")
+st.title("📊 유튜브 쇼핑 쇼츠 정밀 진단기 (v3.0)")
+st.markdown("### 스튜디오 분석표를 던져주세요. **Gemini 3.0**이 냉정하게 판단합니다.")
+st.caption("※ 2025년 11월 출시된 최신 `gemini-3-pro-preview` 모델을 사용합니다.")
 st.markdown("---")
 
-tab1, tab2 = st.tabs(["📝 제목 심폐소생기", "📊 분석표 진단기"])
+# 파일 업로더 (대량 가능)
+uploaded_files = st.file_uploader(
+    "분석할 캡처 이미지를 모두 드래그해서 넣으세요 (20장 이상 가능)", 
+    type=["jpg", "png", "jpeg"], 
+    accept_multiple_files=True
+)
 
-# ---------------------------------------------------------
-# 기능 1: 제목 생성 (Pro 모델 적용)
-# ---------------------------------------------------------
-with tab1:
-    st.header("죽어가는 제목을 '매출'로 바꿉니다")
+if uploaded_files:
+    st.success(f"📸 총 {len(uploaded_files)}장의 분석표가 준비되었습니다.")
     
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
-        original_title = st.text_input("기존 제목을 입력하세요", placeholder="예: 80년을 버틴 과자")
-        product_name = st.text_input("판매할 제품명은?", placeholder="예: 연양갱")
+    # 분석 시작 버튼
+    if st.button("🚀 Gemini 3.0으로 진단 시작", type="primary"):
         
-        if st.button("💰 돈 버는 제목 5개 생성하기", type="primary"):
-            if not original_title or not product_name:
-                st.error("제목과 제품명을 모두 입력해주세요!")
-            else:
-                with st.spinner("최신 Pro AI가 머리를 굴리는 중입니다..."):
-                    try:
-                        # 🔥 모델을 Pro 버전으로 교체했습니다!
-                        model = genai.GenerativeModel('gemini-2.5-pro')
-                        
-                        prompt = f"""
-                        당신은 2025년 한국 시장에 특화된 '식품 커머스 전문 카피라이터'입니다.
-                        사용자가 입력한 제목: "{original_title}"
-                        판매 제품: "{product_name}"
-                        
-                        이 제목을 쇼핑 전환율이 극대화되도록 다음 4가지 공식에 맞춰 수정하고, 추가로 1개는 자유롭게 제안하세요.
-                        반드시 제목 앞이나 뒤에 [꾸덕, 바삭, 육즙, 10분컷, 종결] 같은 감각적 키워드를 상황에 맞게 넣으세요.
-
-                        출력 형식:
-                        1. 💸 맛집 털기형 (가성비 강조)
-                        2. 💊 게으른 미식가형 (편의성 강조)
-                        3. 👑 아는 맛의 공포형 (비밀/권위 강조)
-                        4. 🔥 품절 대란 탑승형 (희소성 강조)
-                        5. 🧪 AI 추천 (자유 형식)
-
-                        설명 없이 제목만 5줄로 깔끔하게 출력하세요.
-                        """
-                        
-                        response = model.generate_content(prompt)
-                        st.success("생성 완료! (Pro 모델이라 더 확실합니다)")
-                        st.code(response.text, language="text")
-                        
-                    except Exception as e:
-                        st.error(f"오류가 발생했습니다: {e}")
-                        st.info("혹시 404 오류가 계속되면, 구글 키에 'Pro' 모델 권한이 있는지 확인해보세요!")
-
-# ---------------------------------------------------------
-# 기능 2: 이미지 분석 (Pro 모델 적용)
-# ---------------------------------------------------------
-with tab2:
-    st.header("유튜브 스튜디오 캡처를 분석합니다")
-    
-    uploaded_file = st.file_uploader("캡처 이미지 업로드 (JPG, PNG)", type=["jpg", "png", "jpeg"])
-    
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="업로드된 이미지", width=400)
+        # 진행 상황바
+        progress_text = "Gemini 3.0이 데이터를 심층 추론 중입니다..."
+        my_bar = st.progress(0, text=progress_text)
         
-        if st.button("🔍 AI 정밀 분석 시작"):
-            with st.spinner("Pro AI가 그래프를 정밀 분석 중입니다..."):
-                try:
-                    # 🔥 여기도 Pro 버전으로 교체!
-                    model = genai.GenerativeModel('gemini-2.5-pro')
-                    
-                    vision_prompt = """
-                    이 이미지는 유튜브 스튜디오 분석 화면입니다.
-                    다음 항목을 분석해서 한국어로 리포트를 써주세요.
-                    
-                    1. **트래픽 소스 분석**: '쇼츠 피드' 비중과 '탐색 기능(또는 검색)' 비중이 대략 몇 %인지 숫자를 읽어서 알려주세요.
-                    2. **시청 지속률 분석**: 그래프가 초반에 급격히 꺾이는지, 완만한지 설명하고 이것이 '피드형'인지 '탐색형'인지 판단하세요.
-                    3. **쇼핑 적합도 평가**: 조회수 대비 수익 효율이 좋아 보이는지 나빠 보이는지 평가하세요.
-                    4. **최종 조언**: 이 채널이 돈을 더 벌기 위해 썸네일을 고쳐야 할지, 영상을 고쳐야 할지 한 줄로 조언하세요.
-                    
-                    형식:
-                    ## 📊 구글 Pro AI 분석 리포트
-                    - **트래픽 성향**: [내용]
-                    - **그래프 패턴**: [내용]
-                    - **종합 등급**: [S/A/B/C 중 하나]
-                    - **닥터의 처방**: [내용]
-                    """
-                    
-                    response = model.generate_content([vision_prompt, image])
-                    st.markdown(response.text)
-                    
-                except Exception as e:
-                    st.error(f"분석 중 오류가 발생했습니다: {e}")
+        # 이미지 하나씩 순서대로 분석
+        for i, uploaded_file in enumerate(uploaded_files):
+            
+            with st.expander(f"📄 {i+1}번째 영상 분석 결과 ({uploaded_file.name})", expanded=True):
+                col_img, col_report = st.columns([1, 1.5])
+                
+                # 왼쪽: 이미지 보여주기
+                image = Image.open(uploaded_file)
+                with col_img:
+                    st.image(image, caption=f"업로드된 분석표 {i+1}", use_column_width=True)
+                
+                # 오른쪽: 분석 결과
+                with col_report:
+                    with st.spinner("Gemini 3.0이 사고(Thinking)하는 중..."):
+                        try:
+                            # 🔥 모델을 최신 3.0 Pro 버전으로 교체!
+                            model = genai.GenerativeModel('gemini-3-pro-preview')
+                            
+                            # 분석 프롬프트 (3.0의 추론 능력을 활용)
+                            vision_prompt = """
+                            당신은 유튜브 쇼핑 알고리즘 최고 전문가입니다.
+                            이 이미지는 유튜브 스튜디오의 '도달 범위' 및 '참여도' 그래프입니다.
+                            
+                            Gemini 3.0의 강력한 추론 능력을 사용하여, 다음 항목을 분석해주세요:
+
+                            1. **🚦 트래픽 소스 판독**:
+                               - '쇼츠 피드(Feed)' vs '탐색/검색(Browse)' 비율을 숫자로 확인하세요.
+                               - 탐색 비중이 높으면 '구매 의도 높음', 피드 비중이 높으면 '단순 노출'로 판단하세요.
+
+                            2. **📉 그래프 이탈 구간 찾기**:
+                               - 시청 지속 시간 그래프가 초반(3초 이내)에 꺾이는지, 완만하게 유지되는지 확인하세요.
+                               - 30초 이후까지 평탄하다면 '쇼핑 설득력 있음'으로 평가하세요.
+
+                            3. **💰 쇼핑 적합도 등급 매기기**:
+                               - 조회수 대비 수익이 좋은지 나쁜지, 혹은 잠재력이 있는지 평가하여 [S/A/B/C/F] 등급을 매기세요.
+
+                            4. **⚡️ 닥터의 직설적 처방**:
+                               - 썸네일을 고쳐야 할까요? (탐색 유입 저조 시)
+                               - 도입부 멘트를 고쳐야 할까요? (초반 이탈 시)
+                               - 상품을 바꿔야 할까요? (수익 저조 시)
+                               - 한 줄로 명확한 행동 지침을 주세요.
+
+                            **출력 형식:**
+                            ### 🩺 Gemini 3.0 진단 리포트
+                            - **트래픽 유형**: [탐색형 / 피드형] (비율 명시)
+                            - **시청 유지력**: [초반 이탈 / 완만함 / 떡상형]
+                            - **종합 등급**: **[등급]**
+                            - **솔루션**: [구체적인 행동 지침 한 줄]
+                            """
+                            
+                            response = model.generate_content([vision_prompt, image])
+                            st.markdown(response.text)
+                            
+                        except Exception as e:
+                            st.error(f"분석 중 오류 발생: {e}")
+                            st.info("※ 3.0 모델이 아직 프리뷰라 불안정할 수 있습니다. 오류가 계속되면 1.5 Pro로 변경을 고려하세요.")
+            
+            # 진행률 업데이트
+            my_bar.progress((i + 1) / len(uploaded_files), text=f"{i+1}/{len(uploaded_files)} 완료...")
+        
+        st.balloons()
+        st.success("✅ 모든 분석이 끝났습니다! 결과를 확인하세요.")
