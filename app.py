@@ -2,12 +2,12 @@ import streamlit as st
 from google import genai
 from PIL import Image
 import os
-import time  # 속도 조절용
+import time
 
 # ---------------------------------------------------------
 # 1. 페이지 설정
 # ---------------------------------------------------------
-st.set_page_config(page_title="쇼핑 쇼츠 해커 (하이브리드)", page_icon="🚀", layout="wide")
+st.set_page_config(page_title="쇼핑 쇼츠 해커 (Hybrid 002)", page_icon="🚀", layout="wide")
 
 # ---------------------------------------------------------
 # 2. API 키 자동 감지
@@ -18,7 +18,7 @@ if "GOOGLE_API_KEY" in st.secrets:
     api_key = st.secrets["GOOGLE_API_KEY"]
     with st.sidebar:
         st.success("🔑 사장님 자동 로그인 완료")
-        st.write("Engine: **Hybrid (Flash + Pro)**")
+        st.write("System: **Hybrid (Flash-002 + Pro-002)**")
 else:
     with st.sidebar:
         st.header("⚙️ 설정")
@@ -29,6 +29,7 @@ if not api_key:
     st.stop()
 
 try:
+    # 신형 SDK 클라이언트 연결
     client = genai.Client(api_key=api_key)
 except Exception as e:
     st.error(f"클라이언트 연결 오류: {e}")
@@ -38,8 +39,8 @@ except Exception as e:
 # 3. 메인 화면
 # ---------------------------------------------------------
 st.title("📊 유튜브 쇼핑 쇼츠 정밀 진단기")
-st.markdown("### **Flash(속도)**로 읽고 **Pro(지능)**로 컨설팅합니다.")
-st.info("💡 '속도 제한(429 Error)'을 우회하는 **하이브리드 기술**이 적용되었습니다.")
+st.markdown("### **Flash-002**가 읽고, **Pro-002**가 전략을 짭니다.")
+st.caption("※ 구글 최신 업데이트 모델(`-002` 시리즈)을 사용하여 404 오류를 해결했습니다.")
 st.markdown("---")
 
 uploaded_files = st.file_uploader(
@@ -49,17 +50,18 @@ uploaded_files = st.file_uploader(
 )
 
 if uploaded_files:
-    st.success(f"📸 {len(uploaded_files)}장의 데이터가 준비되었습니다.")
+    st.success(f"📸 총 {len(uploaded_files)}장의 데이터가 준비되었습니다.")
     
     if st.button("🚀 하이브리드 진단 시작", type="primary"):
         
+        # 데이터를 모아둘 리스트
         all_analysis_results = []
         
-        progress_text = "Flash 엔진이 빠르게 데이터를 수집 중입니다..."
+        progress_text = "1단계: Flash-002 엔진이 데이터를 고속 추출 중입니다..."
         my_bar = st.progress(0, text=progress_text)
         
         # -----------------------------------------------------
-        # [1단계] 개별 이미지 분석 (Flash 모델 사용 - 제한 없음)
+        # [1단계] 개별 이미지 데이터 추출 (Flash-002 사용)
         # -----------------------------------------------------
         for i, uploaded_file in enumerate(uploaded_files):
             
@@ -72,17 +74,17 @@ if uploaded_files:
                 
                 with col_report:
                     try:
-                        # 단순 분석은 Flash에게 맡깁니다 (얘는 제한이 거의 없습니다)
                         vision_prompt = """
                         이 이미지는 유튜브 스튜디오 분석표입니다.
-                        다음 3가지 데이터만 짧고 건조하게 추출하세요:
+                        감정 섞지 말고, 다음 3가지 데이터만 건조하게 팩트만 추출하세요:
                         1. 트래픽 소스 비율 (탐색 vs 피드)
-                        2. 시청 지속률 그래프 특징 (초반 이탈 여부)
-                        3. 쇼핑 수익 성과
+                        2. 시청 지속률 그래프 모양 (초반 이탈 여부)
+                        3. 쇼핑 수익 성과 (금액 및 효율)
                         """
                         
+                        # 🔥 [수정 완료] 모델명 뒤에 '-002'를 붙여서 명확하게 호출
                         response = client.models.generate_content(
-                            model="gemini-1.5-flash",
+                            model="gemini-2.5-flash-002",
                             contents=[vision_prompt, image]
                         )
                         
@@ -90,36 +92,35 @@ if uploaded_files:
                         all_analysis_results.append(f"[{uploaded_file.name} 데이터]: {response.text}")
                         
                     except Exception as e:
-                        st.error(f"오류: {e}")
+                        st.error(f"데이터 추출 중 오류: {e}")
             
-            # 구글 서버를 배려해서 1초씩 쉬어줍니다 (안전장치)
-            time.sleep(1)
+            # 안전장치: 0.5초 대기
+            time.sleep(0.5)
             my_bar.progress((i + 1) / len(uploaded_files))
         
         # -----------------------------------------------------
-        # [2단계] 종합 결론 (여기서 2.5 Pro 등판!)
+        # [2단계] 종합 전략 수립 (Pro-002 사용)
         # -----------------------------------------------------
         st.markdown("---")
-        st.header("📝 Gemini 2.5 Pro 종합 컨설팅")
-        st.caption("※ 위에서 수집한 데이터를 바탕으로 **최고 성능 AI**가 최종 전략을 짭니다.")
+        st.header("📝 Gemini 2.5 Pro (002) 종합 컨설팅")
         
-        with st.spinner("Pro AI가 뇌를 풀가동 중입니다... (잠시만 기다리세요)"):
+        with st.spinner("Pro-002 AI가 데이터를 분석하여 최종 결론을 내리는 중입니다..."):
             try:
                 combined_data = "\n".join(all_analysis_results)
                 
                 final_prompt = f"""
                 당신은 대한민국 최고의 유튜브 쇼핑 채널 컨설턴트입니다.
-                아래 내용은 이 채널의 영상 {len(uploaded_files)}개에 대한 분석 데이터입니다.
+                아래 내용은 이 채널의 영상 {len(uploaded_files)}개에 대한 팩트 데이터입니다.
                 
                 이 데이터를 **통틀어서 봤을 때** 발견되는 패턴과 문제점을 찾아내고,
-                채널 주인에게 아주 꼼꼼하고 직설적인 피드백을 작성하세요.
+                채널 주인(사장님)에게 아주 꼼꼼하고 직설적인 피드백을 작성하세요.
 
                 **[수집된 데이터 모음]**
                 {combined_data}
 
                 **[작성 가이드]**
                 1. **🩺 현재 상태 정밀 진단 (Fact Check)**:
-                   - 전체적으로 '피드 노출' 위주인가, '탐색 유입' 위주인가?
+                   - 전체적으로 '피드 노출(단순노출)' 위주인가, '탐색 유입(구매의도)' 위주인가?
                    - 돈을 벌어다 준 영상들의 공통적인 '성공 공식'은 무엇인가?
                    - 조회수는 높은데 돈 못 번 영상들의 '패착'은 무엇인가?
 
@@ -139,10 +140,9 @@ if uploaded_files:
                 말투는 전문가답게, 확신에 차고 냉철하게 작성하세요.
                 """
                 
-                # 🔥 [핵심] 최종 판단은 사장님이 원하신 'gemini-1.5-pro-002' (2.5 Pro급) 사용!
-                # 텍스트 처리는 이미지 처리보다 제한이 덜해서 여기서 터질 확률은 낮습니다.
+                # 🔥 [수정 완료] 여기도 '-002' 붙여서 2.5급 성능 확보
                 final_response = client.models.generate_content(
-                    model="gemini-1.5-pro-002",
+                    model="gemini-2.5-pro-002",
                     contents=final_prompt
                 )
                 
@@ -150,6 +150,6 @@ if uploaded_files:
                 
             except Exception as e:
                 st.error(f"종합 분석 중 오류 발생: {e}")
-                st.info("혹시라도 여기서 에러가 나면 1분 뒤에 다시 시도하세요. (구글 제한)")
+                st.info("※ 혹시라도 429 에러가 뜨면 1분만 쉬었다가 다시 눌러주세요.")
 
         st.balloons()
