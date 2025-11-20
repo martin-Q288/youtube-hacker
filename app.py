@@ -6,19 +6,18 @@ import os
 # ---------------------------------------------------------
 # 1. 페이지 설정
 # ---------------------------------------------------------
-st.set_page_config(page_title="쇼츠 분석기 (Gemini 3.0 Pro)", page_icon="🚀", layout="wide")
+st.set_page_config(page_title="쇼핑 쇼츠 진단기 (2.5 Pro)", page_icon="🚀", layout="wide")
 
 # ---------------------------------------------------------
 # 2. API 키 자동 감지 & 신형 Client 연결
 # ---------------------------------------------------------
 api_key = None
 
-# Secrets에서 키 확인
 if "GOOGLE_API_KEY" in st.secrets:
     api_key = st.secrets["GOOGLE_API_KEY"]
     with st.sidebar:
-        st.success("🔑 사장님 자동 로그인 (New SDK)")
-        st.write("Engine: **Gemini 3.0 Pro Preview**")
+        st.success("🔑 사장님 자동 로그인 완료")
+        st.write("Engine: **Gemini 2.5 Pro**")
 else:
     with st.sidebar:
         st.header("⚙️ 설정")
@@ -28,8 +27,8 @@ if not api_key:
     st.warning("👈 API 키가 필요합니다.")
     st.stop()
 
-# 🔥 [핵심 변경] 사장님이 알려주신 신형 클라이언트 방식 적용
 try:
+    # 신형 SDK 클라이언트 연결
     client = genai.Client(api_key=api_key)
 except Exception as e:
     st.error(f"클라이언트 연결 오류: {e}")
@@ -38,8 +37,8 @@ except Exception as e:
 # ---------------------------------------------------------
 # 3. 메인 화면
 # ---------------------------------------------------------
-st.title("📊 유튜브 쇼핑 쇼츠 정밀 진단기 (v3.0)")
-st.markdown("### **Gemini 3.0 Pro** (New SDK) 가 분석합니다.")
+st.title("📊 유튜브 쇼핑 쇼츠 정밀 진단기")
+st.markdown("### **Gemini 2.5 Pro**가 분석합니다.")
 st.markdown("---")
 
 uploaded_files = st.file_uploader(
@@ -51,12 +50,11 @@ uploaded_files = st.file_uploader(
 if uploaded_files:
     st.success(f"📸 {len(uploaded_files)}장의 데이터가 준비되었습니다.")
     
-    if st.button("🚀 Gemini 3.0 Pro로 진단 시작", type="primary"):
+    if st.button("🚀 2.5 Pro로 진단 시작", type="primary"):
         
-        # 결과 저장용 리스트 (종합 진단을 위해)
         all_analysis_results = []
         
-        progress_text = "Gemini 3.0이 데이터를 뜯어보는 중입니다..."
+        progress_text = "Gemini 2.5 Pro가 분석 중입니다..."
         my_bar = st.progress(0, text=progress_text)
         
         # -----------------------------------------------------
@@ -73,7 +71,6 @@ if uploaded_files:
                 
                 with col_report:
                     try:
-                        # 프롬프트 작성
                         vision_prompt = """
                         이 유튜브 스튜디오 분석표를 보고 다음 3가지만 핵심적으로 요약하세요.
                         절대 길게 쓰지 말고 데이터 위주로 팩트만 말하세요.
@@ -83,19 +80,18 @@ if uploaded_files:
                         3. 쇼핑 성과 (조회수 대비 수익 효율)
                         """
                         
-                        # 🔥 [핵심 변경] 사장님이 원하신 신형 호출 방식
+                        # 🔥 [요청하신 수정] 모델명을 'gemini-2.5-pro'로 정확히 기입했습니다.
                         response = client.models.generate_content(
-                            model="gemini-3-pro-preview",
+                            model="gemini-2.5-pro",
                             contents=[vision_prompt, image]
                         )
                         
                         st.markdown(response.text)
-                        
-                        # 결과 저장
                         all_analysis_results.append(f"[{uploaded_file.name} 분석결과]: {response.text}")
                         
                     except Exception as e:
                         st.error(f"오류: {e}")
+                        st.warning("⚠️ 만약 '404 Not Found'가 뜨면 구글 API에 'gemini-2.5-pro'라는 이름이 아직 등록되지 않은 것입니다.")
             
             my_bar.progress((i + 1) / len(uploaded_files))
         
@@ -105,7 +101,7 @@ if uploaded_files:
         st.markdown("---")
         st.header("📝 AI 종합 컨설팅 보고서")
         
-        with st.spinner("Gemini 3.0 Pro가 최종 결론을 내리는 중입니다..."):
+        with st.spinner("최종 결론을 내리는 중입니다..."):
             try:
                 combined_data = "\n".join(all_analysis_results)
                 
@@ -131,9 +127,9 @@ if uploaded_files:
                 말투는 전문가답게, 확신에 차고 냉철하게 작성하세요.
                 """
                 
-                # 🔥 [핵심 변경] 텍스트 생성도 신형 방식으로 호출
+                # 종합 분석도 2.5 pro 사용
                 final_response = client.models.generate_content(
-                    model="gemini-3-pro-preview",
+                    model="gemini-2.5-pro",
                     contents=final_prompt
                 )
                 
