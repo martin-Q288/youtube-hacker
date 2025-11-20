@@ -90,7 +90,7 @@ if uploaded_files:
                 with col_report:
                     try:
                         # 사장님이 원하시는 모델명 유지
-                        model = genai.GenerativeModel('gemini-1.5-pro-002') 
+                        model = genai.GenerativeModel('gemini-2.5 pro') 
                         
                         individual_prompt = """
                         이 유튜브 스튜디오 분석표를 보고 핵심만 짧게 요약하세요.
@@ -152,7 +152,7 @@ if uploaded_files:
                 """
                 
                 # 종합 분석 때도 Rate Limit 걸릴 수 있으니 재시도 로직 적용 (이미지 없이 텍스트만)
-                final_model = genai.GenerativeModel('gemini-1.5-pro-002')
+                final_model = genai.GenerativeModel('gemini-2.5 pro')
                 
                 # 텍스트 전용 재시도 로직 (이미지가 없으므로 content 구조가 다름)
                 final_response = None
