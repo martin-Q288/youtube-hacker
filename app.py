@@ -65,9 +65,9 @@ if uploaded_files:
                 with col_report:
                     with st.spinner("데이터 추론 중..."):
                         try:
-                            # [개발자 노트] 구글 서버 호출 ID는 1.5-pro지만, 실제로는 최신 업데이트된 모델이 호출됩니다.
+                            # [개발자 노트] 구글 서버 호출 ID는 2.5-pro지만, 실제로는 최신 업데이트된 모델이 호출됩니다.
                             # 2.5라고 적으면 에러가 나므로, 안정성을 위해 이 ID를 유지합니다.
-                            model = genai.GenerativeModel('gemini-1.5-pro')
+                            model = genai.GenerativeModel('gemini-2.5-pro')
                             
                             vision_prompt = """
                             당신은 2025년 최고의 유튜브 쇼핑 알고리즘 분석가 'Gemini 2.5 Pro'입니다.
