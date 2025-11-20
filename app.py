@@ -15,7 +15,7 @@ if "GOOGLE_API_KEY" in st.secrets:
     api_key = st.secrets["GOOGLE_API_KEY"]
     with st.sidebar:
         st.success("🔑 자동 로그인 완료")
-        st.write("Engine: **Gemini 1.5 Flash** (Stable)")
+        st.write("Engine: **gemini-3-pro-thinking** (Stable)")
 else:
     with st.sidebar:
         st.header("⚙️ 설정")
@@ -67,7 +67,7 @@ if uploaded_files:
                 
                 with col_report:
                     try:
-                        model = genai.GenerativeModel('gemini-1.5-flash')
+                        model = genai.GenerativeModel('gemini-3-pro-thinking')
                         
                         # 개별 분석 프롬프트
                         individual_prompt = """
@@ -127,7 +127,7 @@ if uploaded_files:
                 말투는 정중하지만, 데이터에 기반하여 냉철하고 확신에 찬 어조로 작성하세요.
                 """
                 
-                final_model = genai.GenerativeModel('gemini-1.5-flash')
+                final_model = genai.GenerativeModel('gemini-3-pro-thinking')
                 final_response = final_model.generate_content(final_prompt)
                 
                 st.info("💡 모든 이미지 분석이 끝났습니다. 아래는 AI의 최종 결론입니다.")
